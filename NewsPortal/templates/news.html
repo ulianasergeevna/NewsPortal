@@ -1,0 +1,11 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+{{ news.heading }}
+{% endblock title %}
+
+{% block content %}
+<h1>{{ news.heading }}</h1>
+{{ news.text }}
+<p>{{ news.publication_time | date:"H-M-Y" }} {{ news.publication_time | time:"H:i" }}</p>
+{% endblock content %}
