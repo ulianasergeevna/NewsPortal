@@ -1,4 +1,5 @@
 from django import template
+import re
 import random
 
 
@@ -6,14 +7,23 @@ register = template.Library()
 
 STOP_LIST = [
     'пончик',
-    'ватрушка',
+    'ватруш',
 ]
 
 SYMBOLS = ['*', '!', '#']
 
 @register.filter(name='censor')
 def censor(text: str):
-    for word in text.split(' '):
-        if word.lower() in STOP_LIST:
-             return (random.choice(SYMBOLS)
- * len(word)).join('')
+    words = text.split(' ')
+    new_words = []
+
+    for i, word in enumerate(words):
+        match = re.match(f"^{'|'.join(STOP_LIST)}", word)
+
+        if match is not None:
+            new_words.append(''.join([random.choice(SYMBOLS)] * len(word)))
+        else:
+            new_words.append(word)
+
+
+    return ' '.join(new_words)

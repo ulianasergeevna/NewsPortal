@@ -1,4 +1,4 @@
-from .NewsPortal.News_Portal.models import *
+from News_Portal.models import *
 
 
 u1 = User.objects.get(username='ChtoNibut')
