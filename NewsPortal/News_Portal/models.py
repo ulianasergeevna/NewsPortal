@@ -6,13 +6,9 @@ from django.contrib.auth.models import User
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     rating = models.SmallIntegerField(default=0)
-    # допустим, очень активный автор, который всех бесит,
-    # постит по паре-тройке статей и паре десятков комментов в день,
-    # каждый из которых сu1 = User.objects.get(username='ChtoNibut')
-    #
-    # u2 = User.objects.get(username='User_4')табильно огребает по мешку дизлайков.
-    # Как быстро его антирейтинг перерастёт SmallIntegerField,
-    # если вариант "забанить" недоступен?
+
+    def __str__(self):
+        return self.user.username
 
     def update_rating(self):
         postRat = self.post_set.aggregate(postRating=Sum('rating'))
@@ -32,12 +28,14 @@ class Author(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=64,
-                                unique=True)
+    name = models.CharField(max_length=64, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Post(models.Model):
-    author = models.ForeignKey('Author', on_delete=models.CASCADE)
+    author = models.ForeignKey('Author', on_delete=models.CASCADE, verbose_name='Автор')
 
     ARTICLE = 'AR'
     NEWS = 'NW'
@@ -51,8 +49,8 @@ class Post(models.Model):
                                  choices=TYPES,
                                  default=ARTICLE)
 
-    publication_time = models.DateTimeField(auto_now_add=True)
-    categories = models.ManyToManyField('Category', through='PostCategory')
+    publication_time = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
+    categories = models.ManyToManyField('Category', through='PostCategory', verbose_name='Категория')
     heading = models.CharField(max_length=255)
     text = models.TextField()
     rating = models.SmallIntegerField(default=0)
