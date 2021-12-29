@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'News_Portal',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
