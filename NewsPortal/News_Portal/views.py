@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.core.paginator import Paginator
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
+
 
 from .models import Post, Author
 from .filters import PostFilter
@@ -24,6 +24,8 @@ class PostCreate(CreateView):
     fields = ['author', 'categories', 'heading', 'post_type', 'text']
 
 
+
+
 class PostUpdate(UpdateView):
     model = Post
     template_name = 'create_post_form.html'
@@ -39,14 +41,18 @@ class PostList(ListView):
     template_name = 'newslist.html'
     context_object_name = 'newslist'
     ordering = ['-publication_time']
-    paginate_by = 1
+    paginate_by = 10
 
     def get_queryset(self):
         return Post.objects.filter(post_type=Post.NEWS).order_by('-publication_time')
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['filter'] = PostFilter(self.request.GET, queryset=Post.objects.filter(post_type='NW'))
+        context = {}
+        filter = PostFilter(
+            self.request.GET,
+            queryset=Post.objects.filter(post_type=Post.NEWS).order_by('-publication_time'))
+        context['filter'] = filter
+        context['date_search'] = filter.data.get('date_search')
         return context
 
     def post(self, request, *args, **kwargs):
@@ -78,20 +84,16 @@ class PostDetail(DetailView):
         return super().put(request, *args, **kwargs)
 
 
-class PostSearch(ListView):
-    model = Post
-    template_name = 'newslist.html'
-    context_object_name = 'newslist'
-    ordering = ['-publication_time']
-    paginate_by = 10
-
-    def get_queryset(self):
-        return Post.objects.filter(post_type='NW').order_by('-publication_time')
+class PostSearch(View):
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, 'search.html', context)
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['filter'] = PostFilter(
+        context = {}
+        filter = PostFilter(
             self.request.GET,
-            queryset=self.get_queryset())
-
+            queryset=Post.objects.filter(post_type=Post.NEWS).order_by('-publication_time'))
+        context['filter'] = filter
+        context['date_search'] = filter.data.get('date_search')
         return context

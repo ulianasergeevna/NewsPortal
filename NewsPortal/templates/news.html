@@ -7,7 +7,7 @@
 
 {% block content %}
 <h1>{{ news.heading | censor }}</h1>
-<p>{{ news.publication_time | date:"H-M-Y" }} {{ news.publication_time | time:"H:i" }}</p>
+<p>{{ news.publication_time | date:"d-M-Y" }} {{ news.publication_time | time:"H:i" }}</p>
 <p>{{ news.author.user.username }}</p>
 {% for category in news.categories.all %}
 <p>{{ category.name }}</p>

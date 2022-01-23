@@ -121,7 +121,7 @@ best_post = Post.objects.order_by('-rating').first()
 
 result = {
 	'publication_time': best_post.publication_time,
-	'author_username': best_post.user.username,
+	'author_username': best_post.author.user.username,
 	'rating': best_post.rating,
 	'heading': best_post.heading,
 	'preview': best_post.preview(),
