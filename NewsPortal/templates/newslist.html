@@ -7,14 +7,16 @@ All news
 {% block content %}
     <h1>Все новости</h1>
 
+    <p><a href="/news/create">Создать новость</a></p>
+
     <form method="GET">
-    {{ filter.form }}
+    {{ filter.form.as_p }}
     <input type="submit" value="Найти">
     </form>
 
-    {% if newslist %}
+    {% if filter.qs %}
         <ul>
-        {% for post in newslist %}
+        {% for post in filter.qs %}
         <li>
           <a href="/news/{{ post.pk }}">{{ post.heading }}</a>
             <p>{{ post.publication_time | date:"H-M-Y" }} {{ post.publication_time | time:"H:i" }}</p>

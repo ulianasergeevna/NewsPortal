@@ -1,0 +1,19 @@
+{% extends 'flatpages/default.html' %}
+ 
+{% block title %} News list {% endblock title %}
+ 
+{% block content %}
+<h1>{{ news.heading }}</h1>
+<p>{{ news.publication_time | date:"H-M-Y" }} {{ news.publication_time | time:"H:i" }}</p>
+<p>{{ news.author.user.username }}</p>
+{% for category in news.categories.all %}
+<p>{{ category.name }}</p>
+{% endfor %}
+<p>{{ news.text }}</p>
+<h2>Вы действительно хотите удалить данный товар?</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="Да"></form>
+    <a href="/news/">Нет</a>
+{% endblock content %} 

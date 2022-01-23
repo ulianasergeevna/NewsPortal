@@ -7,6 +7,13 @@
 
 {% block content %}
 <h1>{{ news.heading | censor }}</h1>
-{{ news.text | censor }}
 <p>{{ news.publication_time | date:"H-M-Y" }} {{ news.publication_time | time:"H:i" }}</p>
+<p>{{ news.author.user.username }}</p>
+{% for category in news.categories.all %}
+<p>{{ category.name }}</p>
+{% endfor %}
+<p>{{ news.text | censor }}</p>
+
+<p><a href="/news/{{ news.pk }}/update">Update news</a></p>
+<p><a href="/news/{{ news.pk }}/delete">Delete news</a></p>
 {% endblock content %}

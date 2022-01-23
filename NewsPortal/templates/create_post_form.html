@@ -1,0 +1,14 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Create news
+{% endblock title %}
+
+{% block content %}
+<br>
+<form method="POST">
+    {%csrf_token%}
+    {{ form.as_p }}
+    <input type="submit"/>
+</form>
+{% endblock content %}

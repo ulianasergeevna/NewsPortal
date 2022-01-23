@@ -51,9 +51,12 @@ class Post(models.Model):
 
     publication_time = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
     categories = models.ManyToManyField('Category', through='PostCategory', verbose_name='Категория')
-    heading = models.CharField(max_length=255)
+    heading = models.CharField(max_length=255, verbose_name='Заголовок')
     text = models.TextField()
     rating = models.SmallIntegerField(default=0)
+
+    def get_absolute_url(self):
+        return f'/news/{self.pk}'
 
     def like(self):
         self.rating += 1
