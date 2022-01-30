@@ -7,17 +7,17 @@ All news
 {% block content %}
     <h1>Все новости</h1>
 
-    <p><a href="/news/create">Создать новость</a></p>
+    <p><a href="/news/add">Добавить новость</a></p>
     <p><a href="/news/search">Поиск</a></p>
 
-    {% if filter.qs %}
+    {% if newslist %}
         <ul>
-        {% for post in filter.qs %}
+        {% for post in newslist %}
         <li>
           <a href="/news/{{ post.pk }}">{{ post.heading }}</a>
             <p>{{ post.publication_time | date:"d-M-Y" }} {{ post.publication_time | time:"H:i" }}</p>
             <p>{{ post.text|truncatechars:50 }}</p>
-            <p>{{ post.author.user.username }}</p>
+            <!-- <p>{{ post.author.user.username }}</p> -->
         </li>
         {% endfor %}
         </ul>

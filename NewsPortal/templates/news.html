@@ -10,10 +10,11 @@
 <p>{{ news.publication_time | date:"d-M-Y" }} {{ news.publication_time | time:"H:i" }}</p>
 <p>{{ news.author.user.username }}</p>
 {% for category in news.categories.all %}
-<p>{{ category.name }}</p>
+{{ category.name }}
 {% endfor %}
+<p></p>
 <p>{{ news.text | censor }}</p>
 
-<p><a href="/news/{{ news.pk }}/update">Update news</a></p>
-<p><a href="/news/{{ news.pk }}/delete">Delete news</a></p>
+<p><a href="/news/{{ news.pk }}/edit">Редактировать</a></p>
+<p><a href="/news/{{ news.pk }}/delete">Удалить</a></p>
 {% endblock content %}

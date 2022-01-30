@@ -13,10 +13,10 @@ class PostFilter(FilterSet):
             'categories__name': ['in']
         }
 
-    @property
-    def qs(self):
-        qs = super().qs
-        date_search = self.data.get('date_search')
-        if date_search:
-            qs = qs.filter(publication_time__gt=dt.fromisoformat(date_search))
-        return qs
+#    @property
+#    def qs(self):
+#        qs = super().qs
+#        date_search = self.data.get('date_search')
+#        if date_search:
+#            qs = qs.filter(publication_time__gt=dt.fromisoformat(date_search))
+#        return qs
