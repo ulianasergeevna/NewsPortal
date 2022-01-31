@@ -17,7 +17,7 @@ All news
           <a href="/news/{{ post.pk }}">{{ post.heading }}</a>
             <p>{{ post.publication_time | date:"d-M-Y" }} {{ post.publication_time | time:"H:i" }}</p>
             <p>{{ post.text|truncatechars:50 }}</p>
-            <!-- <p>{{ post.author.user.username }}</p> -->
+            <p>{{ post.author.user.username }}</p>
         </li>
         {% endfor %}
         </ul>

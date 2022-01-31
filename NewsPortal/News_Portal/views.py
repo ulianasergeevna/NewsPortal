@@ -10,22 +10,23 @@ class PostList(ListView):
     template_name = 'newslist.html'
     context_object_name = 'newslist'
     ordering = ['-publication_time']
-    paginate_by = 5
+    paginate_by = 10
 
-#    def get_queryset(self):
-#        return Post.objects.filter(post_type=Post.NEWS).order_by('-publication_time')
+    def get_initial_queryset(self):
+        return Post.objects.filter(post_type=Post.NEWS).order_by('-publication_time')
 
-#    def get_context_data(self, **kwargs):
-#        context = {}
-#        filter = PostFilter(
-#            self.request.GET,
-#            queryset=Post.objects.filter(post_type=Post.NEWS).order_by('-publication_time'))
-#        context['filter'] = filter
-#        context['date_search'] = filter.data.get('date_search')
-#        return context
+    def get_filter(self):
+        return PostFilter(self.request.GET, queryset=self.get_initial_queryset())
+
+    def get_queryset(self):
+        return self.get_filter().qs
+
+    def get_context_data(self, **kwargs):
+        context = {**super().get_context_data(**kwargs), 'filter': self.get_filter()}
+        context['date_search'] = context['filter'].data.get('date_search')
+        return context
 
     def post(self, request, *args, **kwargs):
-
         author = Author.objects.get(pk=int(request.POST['author']))
         post_type = request.POST['post_type']
         category_ids = request.POST['categories']
@@ -42,9 +43,9 @@ class PostList(ListView):
 
 
 class PostSearch(View):
-    #def get(self, request, *args, **kwargs):
-    #    context = self.get_context_data()
-    #    return render(request, 'search.html', context)
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, 'search.html', context)
 
     #def get_context_data(self, **kwargs):
     #    context = {}
@@ -54,16 +55,18 @@ class PostSearch(View):
     #    context['filter'] = filter
     #    context['date_search'] = filter.data.get('date_search')
     #    return context
+    def get_initial_queryset(self):
+        return Post.objects.filter(post_type=Post.NEWS).order_by('-publication_time')
 
     def get_filter(self):
-        return PostFilter(self.request.GET, queryset=super().get_queryset())
+        return PostFilter(self.request.GET, queryset=self.get_initial_queryset())
 
     def get_queryset(self):
         return self.get_filter().qs
 
     def get_context_data(self, *args, **kwargs):
         return {
-            **super().get_context_data(*args, **kwargs),
+            #**super().get_context_data(*args, **kwargs),
             'filter': self.get_filter(),
         }
 
