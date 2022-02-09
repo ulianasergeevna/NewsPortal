@@ -7,8 +7,9 @@
 <p>{{ news.publication_time | date:"H-M-Y" }} {{ news.publication_time | time:"H:i" }}</p>
 <p>{{ news.author.user.username }}</p>
 {% for category in news.categories.all %}
-<p>{{ category.name }}</p>
+{{ category.name }}
 {% endfor %}
+<p></p>
 <p>{{ news.text }}</p>
 <h2>Вы действительно хотите удалить данную запись?</h2>
 

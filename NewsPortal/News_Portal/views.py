@@ -1,8 +1,10 @@
+import view as view
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.core.paginator import Paginator
 from .models import Post, Author
 from .filters import PostFilter
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
 class PostList(ListView):
@@ -47,14 +49,6 @@ class PostSearch(View):
         context = self.get_context_data()
         return render(request, 'search.html', context)
 
-    #def get_context_data(self, **kwargs):
-    #    context = {}
-    #    filter = PostFilter(
-    #        self.request.GET,
-    #        queryset=Post.objects.filter(post_type=Post.NEWS).order_by('-publication_time'))
-    #    context['filter'] = filter
-    #    context['date_search'] = filter.data.get('date_search')
-    #    return context
     def get_initial_queryset(self):
         return Post.objects.filter(post_type=Post.NEWS).order_by('-publication_time')
 
@@ -66,9 +60,9 @@ class PostSearch(View):
 
     def get_context_data(self, *args, **kwargs):
         return {
-            #**super().get_context_data(*args, **kwargs),
             'filter': self.get_filter(),
         }
+
 
 class PostDetail(DetailView):
     model = Post
@@ -81,13 +75,15 @@ class PostDetail(DetailView):
         return super().put(request, *args, **kwargs)
 
 
-class PostCreate(CreateView):
+class PostCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('News_Portal.add_post',)
     model = Post
     template_name = 'create_post_form.html'
     fields = ['author', 'categories', 'heading', 'post_type', 'text']
 
 
-class PostUpdate(UpdateView):
+class PostUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('News_Portal.change_post',)
     model = Post
     template_name = 'create_post_form.html'
     fields = ['author', 'categories', 'heading', 'post_type', 'text']
@@ -97,7 +93,8 @@ class PostUpdate(UpdateView):
         return Post.objects.get(pk=id)
 
 
-class PostDelete(DeleteView):
+class PostDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('News_Portal.delete_post',)
     model = Post
     template_name = 'delete_post_form.html'
     success_url = '/news'

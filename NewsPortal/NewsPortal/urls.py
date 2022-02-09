@@ -16,10 +16,20 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from .views import login_view, login_form
+from django.contrib.auth import views as auth_views
+from .views import IndexView, ProfileView, ProfileUpdate
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('pages/', include('django.contrib.flatpages.urls')),
     path('news/', include('News_Portal.urls')),
+    path('articles/', include('News_Portal.urls')),
+    path('', IndexView.as_view()),
+    path('profile/', ProfileView.as_view()),
+    path('profile/edit/', ProfileUpdate.as_view()),
+    path('login/', auth_views.LoginView.as_view(template_name='login_form.html')),
+    path('sign/', include('sign.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
