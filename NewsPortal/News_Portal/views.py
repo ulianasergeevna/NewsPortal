@@ -15,7 +15,9 @@ class PostList(ListView):
     paginate_by = 10
 
     def get_initial_queryset(self):
-        return Post.objects.filter(post_type=Post.NEWS).order_by('-publication_time')
+        post_type = Post.NEWS if self.request.path == '/news/' else Post.ARTICLE
+        qs = Post.objects.filter(post_type=post_type).order_by('-publication_time')
+        return qs
 
     def get_filter(self):
         return PostFilter(self.request.GET, queryset=self.get_initial_queryset())
