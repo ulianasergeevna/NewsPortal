@@ -1,20 +1,20 @@
 {% extends 'flatpages/default.html' %}
  
-{% block title %} News list {% endblock title %}
+{% block title %} Posts list {% endblock title %}
  
 {% block content %}
-<h1>{{ news.heading }}</h1>
-<p>{{ news.publication_time | date:"H-M-Y" }} {{ news.publication_time | time:"H:i" }}</p>
-<p>{{ news.author.user.username }}</p>
-{% for category in news.categories.all %}
+<h1>{{ posts.heading }}</h1>
+<p>{{ posts.publication_time | date:"H-M-Y" }} {{ posts.publication_time | time:"H:i" }}</p>
+<p>{{ posts.author.user.username }}</p>
+{% for category in posts.categories.all %}
 {{ category.name }}
 {% endfor %}
 <p></p>
-<p>{{ news.text }}</p>
+<p>{{ posts.text }}</p>
 <h2>Вы действительно хотите удалить данную запись?</h2>
 
 <form method="POST">
     {% csrf_token %}
     <input type="submit" value="Да"></form>
-    <a href="/news/">Нет</a>
+    <a href="/posts/">Нет</a>
 {% endblock content %} 

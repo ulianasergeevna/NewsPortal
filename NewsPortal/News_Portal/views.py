@@ -1,21 +1,36 @@
-import view as view
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
-from django.core.paginator import Paginator
-from .models import Post, Author
+from .models import Post, Author, Category
 from .filters import PostFilter
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
+
+
+@login_required
+def subscribe(request, pk):
+    cat = Category.objects.get(pk=pk)
+    cat.subscribers.add(request.user)
+    return redirect('/posts/categories/')
+
+
+class CategoryList(ListView):
+    model = Category
+    template_name = 'categorylist.html'
+    context_object_name = 'categorylist'
+    queryset = Category.objects.all()
 
 
 class PostList(ListView):
     model = Post
-    template_name = 'newslist.html'
-    context_object_name = 'newslist'
+    template_name = 'postslist.html'
+    context_object_name = 'postslist'
     ordering = ['-publication_time']
     paginate_by = 10
 
     def get_initial_queryset(self):
-        post_type = Post.NEWS if self.request.path == '/news/' else Post.ARTICLE
+        post_type = Post.NEWS if self.request.path == '/posts/' else Post.ARTICLE
         qs = Post.objects.filter(post_type=post_type).order_by('-publication_time')
         return qs
 
@@ -68,8 +83,8 @@ class PostSearch(View):
 
 class PostDetail(DetailView):
     model = Post
-    template_name = 'news.html'
-    context_object_name = 'news'
+    template_name = 'posts.html'
+    context_object_name = 'posts'
 
     def put(self, request, *args, **kwargs):
         post = self.get_object()
@@ -82,6 +97,36 @@ class PostCreate(PermissionRequiredMixin, CreateView):
     model = Post
     template_name = 'create_post_form.html'
     fields = ['author', 'categories', 'heading', 'post_type', 'text']
+
+    def post(self, request, *args, **kwargs):
+        super().post(request, *args, **kwargs)
+        post = self.object
+        categories = post.categories.all()
+        recipients = set()
+
+        for category in categories:
+            for subscriber in category.subscribers.all():
+                recipients.add(subscriber.email)
+
+                html_content = render_to_string(
+                    'new_post_in_category.html',
+                    {
+                        'user': subscriber,
+                        'post': post
+                    }
+                )
+
+                msg = EmailMultiAlternatives(
+                    subject=f'{post.heading}',
+                    body=post.text[50:],
+                    from_email='krigar1184@yandex.ru',
+                    to=subscriber.email
+                )
+                msg.attach_alternative(html_content, "text/html")
+
+                msg.send()
+
+        return redirect('appointments:make_appointment')
 
 
 class PostUpdate(PermissionRequiredMixin, UpdateView):
@@ -99,8 +144,8 @@ class PostDelete(PermissionRequiredMixin, DeleteView):
     permission_required = ('News_Portal.delete_post',)
     model = Post
     template_name = 'delete_post_form.html'
-    success_url = '/news'
-    context_object_name = 'news'
+    success_url = '/posts'
+    context_object_name = 'posts'
 
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')

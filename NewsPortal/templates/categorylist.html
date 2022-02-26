@@ -1,23 +1,14 @@
 {% extends 'flatpages/default.html' %}
-
-{% block title %}
-All news
-{% endblock title %}
-
 {% block content %}
-    <h1>Все новости</h1>
+    <h1>Все категории</h1>
 
-    <p><a href="/news/add">Добавить новость</a></p>
-    <p><a href="/news/search">Поиск</a></p>
-
-    {% if newslist %}
+    {% if categorylist %}
         <ul>
-        {% for post in newslist %}
+        {% for cat in categorylist %}
         <li>
-          <a href="/news/{{ post.pk }}">{{ post.heading }}</a>
-            <p>{{ post.publication_time | date:"d-M-Y" }} {{ post.publication_time | time:"H:i" }}</p>
-            <p>{{ post.text|truncatechars:50 }}</p>
-            <p>{{ post.author.user.username }}</p>
+            {{ cat.name }}
+            <!---<input type="submit" value="Подписаться"></form>---!>
+            <a href="/posts/categories/{{ cat.pk }}/subscribe">Подписаться</a>
         </li>
         {% endfor %}
         </ul>

@@ -18,8 +18,9 @@ def login_view(request):
         # Return an 'invalid login' error message.
         ...
 
+
 def login_form(request):
-        return render(request, 'login_form.html')
+    return render(request, 'login_form.html')
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):

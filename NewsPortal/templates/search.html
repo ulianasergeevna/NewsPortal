@@ -6,7 +6,7 @@ Search
 
 {% block content %}
     <br>
-    <form method="GET" action="/news/">
+    <form method="GET" action="/posts/">
     {{ filter.form.as_p }}
     <input name="date_search" type="date" value="{{ date_search }}"/>
     <input type="submit" value="Найти">

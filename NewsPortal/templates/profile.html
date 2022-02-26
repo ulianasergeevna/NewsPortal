@@ -6,6 +6,11 @@
 <p>{{ request.user.last_name }}</p>
 <p>{{ request.user.email }}</p>
 
+<h3>Подписки</h3>
+{% for cat in request.user.category_set.all %}
+<p>{{ cat.name }}</p>
+{% endfor %}
+
 
 <p><a href="/profile/edit/">Редактировать профиль</a></p>
 <!-- <p><a href="/news/{{ news.pk }}/delete">Удалить профиль</a></p> -->

@@ -26,6 +26,7 @@ urlpatterns = [
     path('pages/', include('django.contrib.flatpages.urls')),
     path('news/', include('News_Portal.urls')),
     path('articles/', include('News_Portal.urls')),
+    path('posts/', include('News_Portal.urls')),
     path('', IndexView.as_view()),
     path('profile/', ProfileView.as_view()),
     path('profile/edit/', ProfileUpdate.as_view()),

@@ -1,0 +1,23 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+
+{% block title %}
+{{ posts.heading | censor }}
+{% endblock title %}
+
+{% block content %}
+<h1>{{ posts.heading | censor }}</h1>
+<p>{{ posts.publication_time | date:"d-M-Y" }} {{ posts.publication_time | time:"H:i" }}</p>
+<p>{{ posts.author.user.username }}</p>
+{% for category in posts.categories.all %}
+#{{ category.name }}
+{% endfor %}
+<p>
+    <a href="/posts/categories/">Смотреть все категории</a>
+</p>
+<p></p>
+<p>{{ posts.text | censor }}</p>
+
+<p><a href="/posts/{{ posts.pk }}/edit">Редактировать</a></p>
+<p><a href="/posts/{{ posts.pk }}/delete">Удалить</a></p>
+{% endblock content %}
