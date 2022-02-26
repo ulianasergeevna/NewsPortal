@@ -4,8 +4,6 @@ from .models import Post, Author, Category
 from .filters import PostFilter
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail, EmailMultiAlternatives
-from django.template.loader import render_to_string
 
 
 @login_required
@@ -97,36 +95,6 @@ class PostCreate(PermissionRequiredMixin, CreateView):
     model = Post
     template_name = 'create_post_form.html'
     fields = ['author', 'categories', 'heading', 'post_type', 'text']
-
-    def post(self, request, *args, **kwargs):
-        super().post(request, *args, **kwargs)
-        post = self.object
-        categories = post.categories.all()
-        recipients = set()
-
-        for category in categories:
-            for subscriber in category.subscribers.all():
-                recipients.add(subscriber.email)
-
-                html_content = render_to_string(
-                    'new_post_in_category.html',
-                    {
-                        'user': subscriber,
-                        'post': post
-                    }
-                )
-
-                msg = EmailMultiAlternatives(
-                    subject=f'{post.heading}',
-                    body=post.text[50:],
-                    from_email='krigar1184@yandex.ru',
-                    to=subscriber.email
-                )
-                msg.attach_alternative(html_content, "text/html")
-
-                msg.send()
-
-        return redirect('appointments:make_appointment')
 
 
 class PostUpdate(PermissionRequiredMixin, UpdateView):

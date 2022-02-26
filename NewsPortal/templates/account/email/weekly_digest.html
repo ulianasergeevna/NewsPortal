@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>Здравствуй, {{ user.username }}. За неделю появилось кое-что интересное!</p>
+    {% for category_name, post in data.items %}
+    <h2>{{ category_name }}</h2>
+    <h3>
+        <a href="/posts/{{ post.id }}">{{ post.heading }}</a>
+    </h3>
+    <p>{{ post.text|truncatechars:50 }}</p>
+    {% endfor %}
+</body>
+</html>

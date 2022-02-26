@@ -45,13 +45,13 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'News_Portal',
+    'News_Portal.apps.NewsPortalConfig',
     'django_filters',
     'sign',
+    'django_apscheduler',
 ]
 
-DEFAULT_FROM_EMAIL = 'newsportal-test@yandex.ru'
-#DEFAULT_FROM_EMAIL = EMAIL_HOST_USER + ‘@yandex.ru’
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 SITE_ID = 1
 
@@ -129,11 +129,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -161,9 +158,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 7
-
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = False
-
 ACCOUNT_FORMS = {
     'signup': 'NewsPortal.forms.CommonSignupForm',
 }
@@ -171,6 +166,9 @@ ACCOUNT_FORMS = {
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = 'newsportal-test'
-EMAIL_HOST_PASSWORD = '5e8b64Df!'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_SSL = True
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25
