@@ -4,6 +4,7 @@ from django.views.generic import TemplateView, UpdateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import User
 from NewsPortal.forms import ProfileUpdateForm
+from News_Portal.tasks import printer
 
 
 def login_view(request):
@@ -27,6 +28,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'profile.html'
 
     def get_context_data(self, **kwargs):
+        printer.delay()
         context = super().get_context_data(**kwargs)
         context['is_not_authors'] = not self.request.user.groups.filter(name='authors').exists()
         return context
