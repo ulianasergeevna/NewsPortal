@@ -4,6 +4,7 @@ from .models import Post, Author, Category
 from .filters import PostFilter
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
+from News_Portal.tasks import newpost_signal
 
 
 @login_required
@@ -95,6 +96,12 @@ class PostCreate(PermissionRequiredMixin, CreateView):
     model = Post
     template_name = 'create_post_form.html'
     fields = ['author', 'categories', 'heading', 'post_type', 'text']
+
+    def post(self, request, *args, **kwargs):
+        result = super().post(request, *args, **kwargs)
+        if self.object is not None:
+            newpost_signal.delay(self.object.id)
+        return result
 
 
 class PostUpdate(PermissionRequiredMixin, UpdateView):

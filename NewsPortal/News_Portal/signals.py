@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 
 
-@receiver(post_save, sender=Post)
+#@receiver(post_save, sender=Post)
 def newpost_signal(sender, instance, created, **kwargs):
     post = instance
     categories = post.categories.all()
